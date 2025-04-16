@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+
 void augustEncrypt(char* text) {
     for(int i = 0; text[i] != '\0'; i++) {
         if(text[i] >= 'A' && text[i] <= 'Z')
@@ -8,8 +9,16 @@ void augustEncrypt(char* text) {
             text[i] = ((text[i] - 'a' + 1) % 26) + 'a';
     }
 }
+
 int main() {
-    char text[] = "HELLO";
+    char text[100];
+
+    printf("Enter text to encrypt: ");
+    fgets(text, sizeof(text), stdin);
+
+    
+    text[strcspn(text, "\n")] = '\0';
+
     augustEncrypt(text);
     printf("Encrypted: %s\n", text);
     return 0;
