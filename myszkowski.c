@@ -1,22 +1,43 @@
 #include <stdio.h>
 #include <string.h>
-void myszkowskiEncrypt(char* text, char* key) {
-    int len = strlen(text);
-    int key_len = strlen(key);
-    int i, j;
-    for(char ch = '1'; ch <= '9'; ch++) {
-        for(i = 0; i < key_len; i++) {
-            if(key[i] == ch) {
-                for(j = i; j < len; j += key_len)
-                    printf("%c", text[j]);
+#include <stdlib.h>
+
+void myszkowskiEncrypt(char* text, int* key, int keyLen, char* result) {
+    int len = strlen(text), rows = (len + keyLen - 1) / keyLen, k = 0;
+    char grid[rows][keyLen];
+    for(int i = 0; i < rows * keyLen; i++) {
+        if(i < len) grid[i / keyLen][i % keyLen] = text[i];
+        else grid[i / keyLen][i % keyLen] = 'X';
+    }
+    for(int d = 1; d <= 9; d++) {
+        for(int j = 0; j < keyLen; j++) {
+            if(key[j] == d) {
+                for(int i = 0; i < rows; i++) {
+                    result[k++] = grid[i][j];
+                }
             }
         }
     }
-    printf("\n");
+    result[k] = '\0';
 }
+
 int main() {
-    char text[] = "WEAREDISCOVEREDFLEEATONCE";
-    char key[] = "31233";
-    myszkowskiEncrypt(text, key);
+    char text[100], keyInput[100], result[200];
+    int key[50], keyLen;
+
+    printf("Enter text to encrypt: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = '\0';
+
+    printf("Enter numeric key (e.g., 3142): ");
+    fgets(keyInput, sizeof(keyInput), stdin);
+    keyInput[strcspn(keyInput, "\n")] = '\0';
+
+    keyLen = strlen(keyInput);
+    for(int i = 0; i < keyLen; i++)
+        key[i] = keyInput[i] - '0';
+
+    myszkowskiEncrypt(text, key, keyLen, result);
+    printf("Encrypted: %s\n", result);
     return 0;
 }
